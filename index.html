@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html> 
+ <head>
+    <title>Pong</title> 
+</head>
+ <body>
+ <h1 align = "center"></h1>
+    <p align="center"> 
+      <canvas id="mycanvas"></canvas> 
+    </p>
+ </body>
+ 
+ <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
+ 
+ <script>
+    var sketchProc = function(processingInstance) {
+     with (processingInstance) {
+        size(800, 600); 
+        frameRate(60);
+    //ADD 
+/**?width=800**/ 
+//TO THE END OF THE URL
+//Just click the screen to change scenes
+var timer = 0;
+var points1 = 0;
+var points2 = 0;
+var sy = height-height/2;
+var sy2 = height-height/2;
+var title = function(x, y, letter){
+this.x = x;
+this.y = y;
+this.letter = letter;
+this.letters = [
+[false, false, false, false, false],
+[false, false, false, false, false],
+[false, false, false, false ,false],
+[false, false, false, false, false],
+[false, false, false, false, false]];
+this.column = 0;
+this.row = 0;
+};
+title.prototype.display = function(){
+fill(255, 255, 255);
+for(var i = 0; i <= 4; i++){
+for(var j = 0; j <= 4; j++){
+this.column = i;
+this.row = j;
+if(this.letters[this.column][this.row] === true){
+    noStroke();
+    fill(255, 255, 255);
+    rectMode(CENTER);
+rect(this.x+(this.row*20), this.y+(this.column*20), 20, 20);
+}
+        }
+    }
+if(this.letter === "P"){
+this.letters = [
+[true, true, true, true, false],
+[true, false, false, false, true],
+[true, true, true, true ,true],
+[true, false, false, false, false],
+[true, false, false, false, false]];
+}
+if(this.letter === "O"){
+this.letters = [
+[true, true, true, true, true],
+[true, false, false, false, true],
+[true, false, false, false ,true],
+[true, false, false, false, true],
+[true, true, true, true, true]];
+}
+if(this.letter === "N"){
+this.letters = [
+[true, false, false, false, true],
+[true, true, false, false, true],
+[true, false, true, false ,true],
+[true, false, false, true, true],
+[true, false, false, false, true]];
+}
+if(this.letter === "G"){
+this.letters = [
+[true, true, true, true, true],
+[true, false, false, false, false],
+[true, false, true, true ,true],
+[true, false, false, false, true],
+[true, true, true, true, true]];
+}
+
+if(this.letter === "Y"){
+this.letters = [
+[true, false, false, false, true],
+[true, false, false, false, true],
+[true, true, true, true ,true],
+[false, false, true, false, false],
+[false, false, true, false, false]];
+}
+//O
+if(this.letter === "U"){
+this.letters = [
+[true, false, false, false, true],
+[true, false, false, false, true],
+[true, false, false, false ,true],
+[true, false, false, false, true],
+[true, true, true, true, true]];
+}
+if(this.letter === "W"){
+this.letters = [
+[true, false, false, false, true],
+[true, false, true, false, true],
+[true, false, true, false ,true],
+[true, false, true, false, true],
+[true, true, true, true, true]];
+}
+
+if(this.letter === "L"){
+this.letters = [
+[true, false, false, false, false],
+[true, false, false, false, false],
+[true, false, false, false ,false],
+[true, false, false, false, false],
+[true, true, true, true, true]];
+}
+//O
+if(this.letter === "S"){
+this.letters = [
+[true, true, true, true, true],
+[true, false, false, false, false],
+[true, true, true, true ,true],
+[false, false, false, false, true],
+[true, true, true, true, true]];
+}
+if(this.letter === "T"){
+this.letters = [
+[true, true, true, true, true],
+[false, false, true, false, false],
+[false, false, true, false ,false],
+[false, false, true, false, false],
+[false, false, true, false, false]];
+}
+};
+var ball = function(){
+this.pos = new PVector(width/2, height/2);
+this.vc = [-2, 2];
+this.v = new PVector(-5, this.vc[floor(random(0, 1))]);
+};
+ball.prototype.update = function(){
+this.pos.x += this.v.x;
+this.pos.y += this.v.y;
+};
+ball.prototype.collisions = function(){
+if(this.pos.y <= 0+20){
+this.v.y *= -1;
+} 
+if(this.pos.y >= height-20/2){
+this.v.y *= -1;
+} 
+if(this.pos.x <= 75-20/2+30.5 && this.pos.x >= 75-20/2-20 && this.pos.y >= sy-125/2 && this.pos.y <= sy-125/2+125){
+    this.v.x *= -1;
+}
+if(this.pos.x >= width-75-20/2-20/2 && this.pos.x <= width-75-20/2-20/2+20 && this.pos.y >= sy2-125/2 && this.pos.y <= sy2-125/2+125){
+    this.v.x *= -1;
+}
+if(this.pos.x >= width){
+    points1++;
+}
+if(this.pos.x <= width-width){
+    points2++;
+}
+if(this.pos.x >= width){
+timer = 0;
+   this.pos.x = width/2;
+   this.pos.y = height/2;
+
+}
+if(this.pos.x <= width-width){
+timer = 0;
+   this.pos.x = width/2;
+   this.pos.y = height/2;
+}
+};
+ball.prototype.display = function(){
+rectMode(CORNER);
+fill(255, 255, 255);
+noStroke();
+rect(this.pos.x-20/2, this.pos.y-20/2, 20, 20);
+};
+var score = function(x, y){
+this.x = x;
+this.y = y;
+this.number = [
+    [false, false, false], 
+    [false, false, false], 
+    [false, false, false], 
+    [false, false, false], 
+    [false, false, false]];
+this.column = 0;
+this.row = 0;
+};
+score.prototype.numbers = function(points){
+    fill(255, 255, 255);
+for(var i = 0; i <= 2; i++){
+    for(var j = 0; j <= 4; j++){
+this.column = i;
+this.row = j;
+if(this.number[this.row][this.column] === true){
+noStroke();
+    fill(255, 255, 255);
+    rectMode(CENTER);
+    rect(this.x+(this.column*20), this.y+(this.row*20), 20, 20);
+}
+}
+}
+if(points === 0){
+    this.number = [
+    [true, true, true], 
+    [true, false, true], 
+    [true, false, true], 
+    [true, false, true], 
+    [true, true, true]];
+}
+if(points === 1){
+    this.number = [
+    [false, true, false], 
+    [false, true, false], 
+    [false, true, false], 
+    [false, true, false], 
+    [false, true, false]];
+}
+if(points === 2){
+    this.number = [
+    [true, true, true], 
+    [false, false, true], 
+    [true, true, true], 
+    [true, false, false], 
+    [true, true, true]];
+}
+if(points === 3){
+    this.number = [
+    [true, true, true], 
+    [false, false, true], 
+    [true, true, true], 
+    [false, false, true], 
+    [true, true, true]];
+}
+if(points === 4){
+    this.number = [
+    [true, false, true], 
+    [true, false, true], 
+    [true, true, true], 
+    [false, false, true], 
+    [false, false, true]];
+}
+if(points === 5){
+    this.number = [
+    [true, true, true], 
+    [true, false, false], 
+    [true, true, true], 
+    [false, false, true], 
+    [true, true, true]];
+}
+if(points === 6){
+    this.number = [
+    [true, true, true], 
+    [true, false, false], 
+    [true, true, true], 
+    [true, false, true], 
+    [true, true, true]];
+}
+if(points === 7){
+    this.number = [
+    [true, true, true], 
+    [false, false, true], 
+    [false, false, true], 
+    [false, false, true], 
+    [false, false, true]];
+}
+if(points === 8){
+    this.number = [
+    [true, true, true], 
+    [true, false, true], 
+    [true, true, true], 
+    [true, false, true], 
+    [true, true, true]];
+}
+if(points === 9){
+    this.number = [
+    [true, true, true], 
+    [true, false, true], 
+    [true, true, true], 
+    [false, false, true], 
+    [true, true, true]];
+}
+};
+var scene = 0;
+var ball = new ball();
+var score1 = new score(width/2-90, 0+40);
+var score2 = new score(width/2+100/2, 40);
+var p = new title(width/2-220, height/2-120/2, "P");
+var o = new title(width/2-100, height/2-120/2, "O");
+var n = new title(width/2+20, height/2-120/2, "N");
+var g = new title(width/2+100+20+20, height/2-120/2, "G");
+
+var y = new title(width/2-170, height/2-150, "Y");
+var o1 = new title(width/2-50, height/2-150, "O");
+var u = new title(width/2+150/2, height/2-150, "U");
+var w = new title(width/2-170, height/2-50/2, "W");
+var o2 = new title(width/2-50, height/2-50/2, "O");
+var n1 = new title(width/2+150/2, height/2-50/2, "N");
+
+var l = new title(width/2-170-50, height/2-50/2, "L");
+var o3 = new title(width/2-170+150/2, height/2-50/2, "O");
+var s = new title(width/2-170+150/2+120, height/2-50/2, "S");
+var t = new title(width/2-170+150/2+120+120, height/2-50/2, "T");
+draw = function(){
+if(scene === 0){
+background(0, 0, 0);
+for(var i = 0; i <= height; i+=40){
+    rectMode(CENTER);
+    rect(width/2, i, 20, 20);
+}
+fill(0, 0, 0);
+rect(width/2, height/2-20, 20, 100);
+p.display();
+o.display();
+n.display();
+g.display();
+score1.numbers(points1);
+score2.numbers(points2);
+}
+if(scene === 1){
+background(0, 0, 0);
+if(points1 > 9){
+    scene = 3;
+}
+if(points2 > 9){
+    scene = 4;
+}
+timer += 0.1;
+//court
+for(var i = 0; i <= height; i+=40){
+    rectMode(CENTER);
+    rect(width/2, i, 20, 20);
+}
+
+//sidebars
+rectMode(CORNER);
+stroke(0);
+fill(255, 255, 255);
+rect(75-20/2, sy-125/2, 20, 125);
+rect(width-75-20/2, sy2-125/2, 20, 125);
+score1.numbers(points1);
+score2.numbers(points2);
+ball.display();
+if(timer >= 5){
+ball.update();
+if(sy2 >= ball.pos.y && ball.pos.x > width/3){
+    sy2 -= 2.5;
+} else {
+if(ball.pos.x > width/3 && sy2 <= ball.pos.y){
+    sy2 += 2.5;
+}
+}
+if(sy2 >= height-125/2){
+   sy2 = height-125/2+1;
+} 
+if(sy2 <= 125/2){
+   sy2 = 125/2+1;
+} 
+if(sy >= height-125/2){
+   sy = height-125/2+1;
+} 
+if(sy <= 125/2){
+   sy = 125/2+1;
+} 
+}
+ball.collisions();
+if(keyPressed && keyCode === DOWN){
+    sy += 2.5;
+}
+if(keyPressed && keyCode === UP){
+    sy -= 2.5;
+}
+
+}
+if(scene === 3){
+    background(0, 0, 0);
+    y.display();
+    o1.display();
+    u.display();
+    w.display();
+    o2.display();
+    n1.display();
+points1 = 0;
+points2 = 0;
+sy = height/2;
+sy2 = height/2;
+}
+if(scene === 4){
+    background(0, 0, 0);
+    y.display();
+    o1.display();
+    u.display();
+    l.display();
+    o3.display();
+    s.display();
+    t.display();
+points1 = 0;
+points2 = 0;
+sy = height/2;
+sy2 = height/2;
+}
+};
+mouseClicked = function(){
+if(scene === 0){
+    scene++;
+}
+if(scene === 3){
+    scene = 0;
+}
+if(scene === 4){
+    scene = 0;
+}
+};
+        
+    }};
+
+    var canvas = document.getElementById("mycanvas"); 
+    var processingInstance = new Processing(canvas, sketchProc); 
+ </script>
+
+</html>
