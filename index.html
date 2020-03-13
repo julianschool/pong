@@ -23,6 +23,7 @@
 //Just click the screen to change scenes
 var beep1 = new Audio("https://julianschool.github.io/pong/beep1.mp3");
 var beep2 = new Audio("https://julianschool.github.io/pong/beep2.mp3");
+var beep3 = new Audio("https://julianschool.github.io/pong/beep3.mp3");
 var timer = 0;
 var points1 = 0;
 var points2 = 0;
@@ -168,9 +169,11 @@ if(this.pos.x >= width-75-20/2-20/2 && this.pos.x <= width-75-20/2-20/2+20 && th
 }
 if(this.pos.x >= width){
     points1++;
+ beep3.play();
 }
 if(this.pos.x <= width-width){
     points2++;
+beep3.play();
 }
 if(this.pos.x >= width){
 timer = 0;
